@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Household Finance Game Plan</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Household Finance</p>
+        <h1>Paycheck Game Plan</h1>
+        <p class="subtitle">Plan upcoming bills, flexible spending, savings, and safe-to-spend cash.</p>
+      </div>
+      <div class="safe-card">
+        <span>Safe to spend</span>
+        <strong id="safeToSpend">$0.00</strong>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="App sections">
+      <button class="tab active" data-tab="dashboard">Dashboard</button>
+      <button class="tab" data-tab="accounts">Accounts</button>
+      <button class="tab" data-tab="bills">Bills</button>
+      <button class="tab" data-tab="buckets">Buckets</button>
+      <button class="tab" data-tab="paychecks">Paychecks</button>
+      <button class="tab" data-tab="plan">Game Plan</button>
+    </nav>
+
+    <main>
+      <section id="dashboard" class="panel active">
+        <div class="grid two">
+          <article class="card">
+            <h2>Current balances</h2>
+            <div id="accountSummary" class="list"></div>
+          </article>
+          <article class="card">
+            <h2>Next upcoming bills</h2>
+            <div id="upcomingBills" class="list"></div>
+          </article>
+        </div>
+        <article class="card">
+          <h2>Quick setup</h2>
+          <p>This prototype stores data in this browser. For best persistence on iPhone, run it from a hosted URL and add it to your Home Screen. Opening from Files may not reliably save data.</p>
+          <p id="storageStatus" class="muted">Checking storage…</p>
+          <button id="loadSample" class="secondary">Load sample data</button>
+          <button id="exportData" class="secondary">Export backup</button>
+          <label class="file-button">Import backup<input id="importData" type="file" accept="application/json" hidden /></label>
+          <button id="resetData" class="danger">Reset all data</button>
+        </article>
+      </section>
+
+      <section id="accounts" class="panel">
+        <article class="card">
+          <h2>Add / update account</h2>
+          <form id="accountForm" class="form-row">
+            <input name="name" placeholder="Account name, e.g. US Bank Checking" required />
+            <input name="balance" type="number" step="0.01" placeholder="Balance" required />
+            <select name="type">
+              <option>Checking</option><option>Savings</option><option>Credit Card</option><option>Cash</option>
+            </select>
+            <button>Add account</button>
+          </form>
+          <p class="muted">Plaid placeholder: bank linking will replace or update these balances later.</p>
+        </article>
+        <article class="card"><h2>Accounts</h2><div id="accountsList" class="list"></div></article>
+      </section>
+
+      <section id="bills" class="panel">
+        <article class="card">
+          <h2>Add bill or expense</h2>
+          <form id="billForm" class="form-grid">
+            <input name="name" placeholder="Name, e.g. Mortgage" required />
+            <input name="amount" type="number" step="0.01" placeholder="Amount" required />
+            <input name="dueDate" type="date" required />
+            <select name="category">
+              <option value="fixed">Fixed</option>
+              <option value="variable">Non-fixed</option>
+            </select>
+            <select name="recurrence">
+              <option value="one-time">One time</option>
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+              <option value="biweekly">Biweekly</option>
+            </select>
+            <button>Add bill</button>
+          </form>
+        </article>
+        <article class="card"><h2>Bill calendar</h2><div id="billsList" class="list"></div></article>
+      </section>
+
+      <section id="buckets" class="panel">
+        <article class="card">
+          <h2>Add bucket</h2>
+          <form id="bucketForm" class="form-grid">
+            <input name="name" placeholder="Groceries, Gas, Baby, Emergency Fund" required />
+            <input name="amount" type="number" step="0.01" placeholder="Amount per paycheck / goal amount" required />
+            <select name="type">
+              <option value="variable">Non-fixed per paycheck</option>
+              <option value="savings">Savings goal</option>
+              <option value="safe">Safe-to-spend</option>
+            </select>
+            <input name="targetDate" type="date" />
+            <button>Add bucket</button>
+          </form>
+          <p class="muted">Non-fixed buckets reset every paycheck. Savings goals can have optional target dates.</p>
+        </article>
+        <article class="card"><h2>Buckets</h2><div id="bucketsList" class="list"></div></article>
+      </section>
+
+      <section id="paychecks" class="panel">
+        <article class="card">
+          <h2>Add paycheck template</h2>
+          <form id="paycheckForm" class="form-grid">
+            <input name="person" placeholder="Nick or Danielle" required />
+            <input name="amount" type="number" step="0.01" placeholder="Net paycheck amount" required />
+            <input name="nextDate" type="date" required />
+            <select name="frequency"><option value="biweekly">Biweekly</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select>
+            <button>Add paycheck</button>
+          </form>
+        </article>
+        <article class="card"><h2>Paychecks</h2><div id="paychecksList" class="list"></div></article>
+      </section>
+
+      <section id="plan" class="panel">
+        <article class="card">
+          <h2>Generate Paycheck Game Plan</h2>
+          <div class="form-row">
+            <input id="lookaheadDays" type="number" value="45" min="7" max="180" />
+            <button id="generatePlan">Generate plan</button>
+          </div>
+          <p class="muted">Priority: fixed expenses → non-fixed buckets → savings goals → safe-to-spend. Uses current balances plus expected future paychecks.</p>
+        </article>
+        <article class="card"><h2>Plan</h2><div id="planOutput" class="list"></div></article>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
